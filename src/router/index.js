@@ -16,7 +16,7 @@ const router = createRouter({
     ,
     {
       path: '/hw02',
-      component: () => import('../views/AsyncView.vue')
+      component: () => import('../views/TodoView.vue')
     }
   ]
 })
