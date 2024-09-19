@@ -150,32 +150,6 @@ const signIn = async () => {
 
 
 //驗證登入
-const user = ref({
-  uid: '',
-  nickname: ''
-})
-const messageCheckout = ref()
-const checkout = async() => {
-    try{
-        const token = document.cookie.replace(
-        /(?:(?:^|.*;\s*)tokenName\s*=\s*([^;]*).*$)|^.*$/,
-        "$1",
-        );
-        console.log(token);
-        myToken.value = token
-        const res = await axios.get(`${api}/users/checkout`,{
-        headers: {
-            Authorization:myToken.value
-        }
-        })
-        console.log(res);
-        user.value = res.data
-        messageCheckout.value = "驗證成功"
-    }catch(error){
-        console.log(error);
-        messageCheckout.value = "尚未登入無法驗證" + error.message
-    }
-}
 
 
 
