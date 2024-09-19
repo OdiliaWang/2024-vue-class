@@ -1,7 +1,7 @@
 <template>
     <div class="py-5 d-flex justify-content-center align-items-center">
         <div class="auth-content overflow-hidden">
-            <div class="container">
+            <div class="container" id="authPage">
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card overflow-hidden m-0">
@@ -30,6 +30,18 @@
                                             <span>還沒有帳號嗎？</span>
                                             <button type="button" class="btn btn-md btn-link link-offset-2" data-bs-toggle="modal" data-bs-target="#authSignUp"> 註冊 </button>
                                         </div>
+
+                                        <!-- 驗證 -->
+                                        <div id="memberUid" class="pt-3">
+                                            <div class="card p-4">
+                                                <h5>UID驗證</h5>
+                                                <div class="d-flex">
+                                                    <input type="text" class="form-control">
+                                                    <button class="btn btn-secondary w-25 ms-2">驗證</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- end 驗證 -->
                                     </div>
                                 </div>
                             </div>
@@ -73,6 +85,35 @@
             </div>
         </div>
         <!-- end Modal -->
+    </div>
+    <div class="py-5" id="todoPage">
+        <div class="todo-content">
+            <div class="container-fluid">
+                <!-- Todo List -->
+                <div class="row justify-content-center align-items-center">
+                    <div class="col-xl-8">
+                        <div id="todoList">
+                            <div class="card">
+                                <div class="card-header p-3">
+                                    <h3 class="fw-bold mb-0">待辦事項清單</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-9">
+                                            <input type="text" class="form-control" placeholder="輸入代辦事項">
+                                        </div>
+                                        <div class="col-3">
+                                            <button type="button" class="btn btn-primary w-100" @click="addProject"> 新增 </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end List -->
+            </div>
+        </div>
     </div>
 </template>
 
@@ -150,6 +191,7 @@ const signIn = async () => {
 
 
 //驗證登入
+
 
 
 
