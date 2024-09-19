@@ -108,10 +108,9 @@ const signUp = async () => {
         // 1秒後關閉Modal視窗
         setTimeout(() => {
             const modalElement = document.getElementById('authSignUp') // 確保選到正確的Modal ID
-            const modalInstance = new bootstrap.Modal(modalElement) // 使用new初始化Modal
-            modalInstance.hide(modalElement) // 關閉Modal
-        }, 1000)
-        console.log(modalInstance)
+            const modalInstance = bootstrap.Modal.getInstance(modalElement)
+            modalInstance.hide() // 關閉Modal
+        }, 2000) // 2秒後關閉
     } catch (error) {
         console.log(error)
         messageSignUp.value = error.response.data.message // 顯示錯誤訊息
@@ -151,6 +150,32 @@ const signIn = async () => {
 
 
 //驗證登入
+const user = ref({
+  uid: '',
+  nickname: ''
+})
+const messageCheckout = ref()
+const checkout = async() => {
+    try{
+        const token = document.cookie.replace(
+        /(?:(?:^|.*;\s*)tokenName\s*=\s*([^;]*).*$)|^.*$/,
+        "$1",
+        );
+        console.log(token);
+        myToken.value = token
+        const res = await axios.get(`${api}/users/checkout`,{
+        headers: {
+            Authorization:myToken.value
+        }
+        })
+        console.log(res);
+        user.value = res.data
+        messageCheckout.value = "驗證成功"
+    }catch(error){
+        console.log(error);
+        messageCheckout.value = "尚未登入無法驗證" + error.message
+    }
+}
 
 
 
