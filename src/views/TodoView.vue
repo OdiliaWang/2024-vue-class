@@ -66,7 +66,7 @@
                                     <input type="text" id="SignUpNickname" class="form-control" placeholder="請設定暱稱" v-model="signUpField.nickname">
                                 </div>
                             </div>
-                            <button type="button" class="btn btn-success w-100" @click="signup"> 註冊 </button>
+                            <button type="button" class="btn btn-success w-100" @click="signUp"> 註冊 </button>
                         </form>
                     </div>
                 </div>
@@ -92,7 +92,7 @@ const signUpField = ref({
   nickname: ''
 })
 
-const signup = async () => {
+const signUp = async () => {
     try {
         const res = await axios.post(`${api}/users/sign_up`, signUpField.value)
         console.log(res);
@@ -107,10 +107,11 @@ const signup = async () => {
         
         // 1秒後關閉Modal視窗
         setTimeout(() => {
-            const modalElement = document.querySelector('#exampleModal') // 確保選到正確的Modal ID
-            const modalInstance = bootstrap.Modal.getInstance(modalElement)
-            modalInstance.hide() // 關閉Modal
-        }, 1000) // 1秒後關閉
+            const modalElement = document.getElementById('authSignUp') // 確保選到正確的Modal ID
+            const modalInstance = new bootstrap.Modal(modalElement) // 使用new初始化Modal
+            modalInstance.hide(modalElement) // 關閉Modal
+        }, 1000)
+        console.log(modalInstance)
     } catch (error) {
         console.log(error)
         messageSignUp.value = error.response.data.message // 顯示錯誤訊息
@@ -168,7 +169,7 @@ const signIn = async () => {
 .alert.alert-danger {
     color: #da3e3e;
 }
-.alert.alert-danger {
-    color:  #34bd6d;
+.alert.alert-success {
+    color:  #3fab6c;
 }
 </style>
