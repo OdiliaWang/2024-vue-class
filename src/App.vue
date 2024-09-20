@@ -9,7 +9,7 @@ import { RouterLink, RouterView } from 'vue-router'
 
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand">
-          <img src="/src/assets/img/logo-v.png" width="60" class="d-inline-block align-top ms-3" alt="logo">
+          <img src="./assets/img/logo-v.png" width="60" class="d-inline-block align-top ms-3" alt="logo">
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
