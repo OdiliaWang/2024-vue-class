@@ -13,4 +13,9 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
+  build: {
+    rollupOptions: {
+      external: ['index-B3HtZrNK.js', 'index-BfWiQV-e.css']
+    }
+  },
 });
