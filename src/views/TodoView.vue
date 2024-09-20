@@ -33,13 +33,17 @@
 
                                         <!-- 驗證 -->
                                         <div class="pt-3">
-                                            <div class="card p-4">
-                                                <h5>UID驗證</h5>
-                                                <div class="d-flex">
-                                                    <div class="col">
-                                                        <input type="text" id="memberUid" class="form-control" readonly />
+                                            <div v-if="user.uid">
+                                                <div class="card p-4">
+                                                    <h5>登入驗證</h5>
+                                                    <p>嗨！ {{ user.nickname }} 請點擊驗證進入待辦清單</p>
+                                                    <div class="d-flex">
+                                                        <div class="col">
+                                                            <input type="text" class="form-control" v-model="memberToken" />
+                                                        </div>
+                                                        <button class="btn btn-secondary w-25 ms-2" @click="validateToken"> 驗證 </button>
                                                     </div>
-                                                    <button class="btn btn-secondary w-25 ms-2" @click="validateToken">驗證</button>
+                                                    <p class="text-danger float-end">{{ messageCheckOut }}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -121,7 +125,7 @@
 
 <script setup>
 import axios from 'axios';
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 
 const api = 'https://todolist-api.hexschool.io'
 
@@ -150,10 +154,10 @@ const signUp = async () => {
         
         // 1秒後關閉Modal視窗
         setTimeout(() => {
-            const modalElement = document.getElementById('authSignUp') // 確保選到正確的Modal ID
+            const modalElement = document.getElementById('authSignUp')
             const modalInstance = bootstrap.Modal.getInstance(modalElement)
             modalInstance.hide() // 關閉Modal
-        }, 2000) // 2秒後關閉
+        }, 2000)
     } catch (error) {
         console.log(error)
         messageSignUp.value = error.response.data.message // 顯示錯誤訊息
@@ -167,35 +171,21 @@ const signInField = ref({
   password: ''
 })
 
-const uid = ref('') // 儲存 UID
-const token = ref('') // 儲存 Token
 const messageValidation = ref('') // 顯示驗證訊息
-const isLoggedIn = ref(false) // 紀錄是否登入成功
 const alertClass = ref('alert-danger') // 預設錯誤訊息的樣式
+const token = ref('');
 
 // 登入邏輯
 const signIn = async () => {
     try {
-        const res = await axios.post(`${api}/users/sign_in`, signInField.value)
-        console.log(res);
+        const response = await axios.post(`${api}/users/sign_in`, signInField.value)
 
-        // 儲存 Token 和 UID
-        token.value = res.data.token
-        uid.value = res.data.uid
-
-        // 將 Token 和 UID 設置到 Cookies 中
-        document.cookie = `customToken=${token.value};`
-        document.cookie = `customUid=${uid.value};`
-
-        // 將 UID 顯示在 input 元素中
-        const uidInput = document.getElementById('memberUid')
-        if (uidInput) {
-            uidInput.value = uid.value
-        }
+        // 儲存 Token
+        token.value = response.data.token;
+        console.log(response.data.token);
 
         messageValidation.value = '登入成功，請驗證'
         alertClass.value = 'alert-success' // 更改為成功訊息樣式
-        document.cookie = `custonTodoName=${res.data.token};`
     } catch (error) {
         console.log(error);
         messageValidation.value = '登入失敗，請檢查帳號和密碼'
@@ -203,53 +193,29 @@ const signIn = async () => {
     }
 }
 
-// 驗證 Token 和 UID
+// 驗證 Token
+const user = ref({
+    nickname: '',
+    uid: ''
+})
+
+const memberToken = ref('') // 帳號Tokan
+const messageCheckOut = ref('') // 顯示驗證訊息
+
 const validateToken = async () => {
-    // 從 Cookies 中抓取 Token 和 UID
-    const cookies = document.cookie.split(';').reduce((acc, cookie) => {
-        const [key, value] = cookie.trim().split('=')
-        acc[key] = value
-        return acc
-    }, {})
-
-    token.value = cookies.customToken || ''
-    uid.value = cookies.customUid || ''
-
-    if (!token.value || !uid.value) {
-        messageValidation.value = '無效的 Token 或 UID，請重新登入'
-        return
-    }
-
     try {
-        // 假設後端有一個 API 可以驗證 Token
-        const res = await axios.post(`${api}/users/validate_token`, {
-            token: token.value,
-            uid: uid.value
-        })
-        
-        // 驗證成功
-        if (res.data.valid) {
-            messageValidation.value = 'Token 驗證成功！'
-            isLoggedIn.value = true
-
-            // 1.5 秒後清空畫面，只留下 todoPage 區塊
-            setTimeout(() => {
-                const pageElement = document.getElementById('todoPage')
-                document.body.innerHTML = '' // 清空整個頁面
-                document.body.appendChild(pageElement) // 僅保留 todoPage 區塊
-            }, 1500)
-        } else {
-            messageValidation.value = '無效的 Token，請重新登入'
-            isLoggedIn.value = false
-        }
+        const response = await axios.get(`${api}/users/checkout`, {
+            header: {
+                Authorization: memberToken.value,
+            },
+        });
+        memberToken.value = response.data.token;
+        messageCheckOut.value = '驗證成功，3秒後自動跳轉至待辦事項'
     } catch (error) {
-        console.log(error)
-        messageValidation.value = 'Token 驗證失敗，請稍後再試'
-        isLoggedIn.value = false
+        console.log(error);
+        messageCheckOut.value = '驗證失敗，請再次登入'
     }
 }
-
-
 
 
 </script>
